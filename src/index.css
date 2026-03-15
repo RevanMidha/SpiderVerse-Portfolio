@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+}
+
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #050114; /* Dark Spiderverse Background */
+  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+}
+
+.font-spider {
+  font-family: 'Kanit', sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: -2px;
+}
+
+.font-ui {
+  font-family: 'Outfit', sans-serif;
+}
+
+.font-heading {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-style: normal;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* Spider-Verse Glitch Animation */
+@keyframes glitch {
+  0% { transform: translate(0) }
+  10% { transform: translate(-4px, 2px) }
+  20% { transform: translate(4px, -2px) }
+  30% { transform: translate(-4px, -2px) }
+  40% { transform: translate(4px, 2px) }
+  50% { transform: translate(0) }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(2deg); }
+}
+
+@keyframes scanline {
+  0% { bottom: 100%; }
+  80% { bottom: 100%; }
+  100% { bottom: 0%; }
+}
+
+@keyframes vignette-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.8; }
+}
+
+.animate-glitch:hover {
+  animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+  color: #ff0055;
+  text-shadow: 2px 2px 0px #00e5ff, -2px -2px 0px #ff0055;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Halftone pattern overlay */
+.halftone-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  background-image: 
+    radial-gradient(circle at center, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.4) 100%),
+    radial-gradient(rgba(255, 255, 255, 0.05) 15%, transparent 15%);
+  background-size: 100% 100%, 8px 8px;
+  opacity: 0.5;
+  z-index: 50;
+}
+
+.vignette-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  background: radial-gradient(circle, transparent 20%, rgba(5, 1, 20, 0.9) 100%);
+  z-index: 51;
+  animation: vignette-pulse 10s ease-in-out infinite;
+}
+
+.scanline-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(to bottom, transparent 50%, rgba(0, 229, 255, 0.05) 50.5%, transparent 51%);
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 52;
+  opacity: 0.3;
+}
