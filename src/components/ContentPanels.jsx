@@ -31,19 +31,16 @@ const panels = {
         <div className="bg-white/5 border border-white/10 rounded-xl p-5">
           <h3 className="text-cyan-400 font-heading text-xs tracking-widest mb-3">🕸️ ORIGIN STORY</h3>
           <p className="text-zinc-300 leading-relaxed text-sm mb-3" style={{ textAlign: 'justify' }}>
-            Hey, I'm Revan — a developer who enjoys building interesting things with code.
+            Hey, I'm Revan — a computer science student who enjoys exploring how different technologies work and building practical systems with them.
           </p>
           <p className="text-zinc-300 leading-relaxed text-sm mb-3" style={{ textAlign: 'justify' }}>
-            I'm particularly interested in creative frontend development, interactive web experiences, and full-stack applications. 
-            I like exploring how modern technologies can turn ideas into real products, whether that's visual interfaces, 
-            experimental projects, or systems that solve practical problems.
+            My interests span across software development, cybersecurity, machine learning, and interactive applications. I enjoy learning new tools and concepts, then applying them by building projects that combine multiple technologies together.
           </p>
           <p className="text-zinc-300 leading-relaxed text-sm mb-3" style={{ textAlign: 'justify' }}>
-            Outside of traditional web development, I'm also interested in areas like cybersecurity, machine learning, 
-            and building experimental projects that combine multiple technologies together.
+            Most of the work I do involves experimenting with ideas, understanding how systems behave in real-world scenarios, and turning those ideas into functional applications.
           </p>
           <p className="text-zinc-300 leading-relaxed text-sm" style={{ textAlign: 'justify' }}>
-            I enjoy exploring different technologies and applying what I learn by building practical projects and applications.
+            I’m particularly interested in areas like network security, intelligent systems, and building projects that blend software, data, and real-time interaction.
           </p>
         </div>
 
