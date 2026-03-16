@@ -4,8 +4,6 @@
 
 <div align="center">
 
-# 🕸️ Spider-Verse Portfolio
-
 ### Interactive 3D Developer Portfolio
 
 Built with **React • Three.js • React Three Fiber**
