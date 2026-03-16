@@ -2,22 +2,6 @@
   <img src="https://capsule-render.vercel.app/api?type=waving&color=ff0080&height=200&section=header&text=Spider-Verse%20Portfolio&fontSize=50&fontColor=ffffff&animation=fadeIn" />
 </p>
 
-<div align="center">
-
-### Interactive 3D Developer Portfolio
-
-Built with **React • Three.js • React Three Fiber**
-
-</div>
-
-<p align="center">
-
-<img src="https://img.shields.io/badge/React-ThreeJS-61DAFB?style=for-the-badge&logo=react&logoColor=white" />
-<img src="https://img.shields.io/badge/Three.js-WebGL-black?style=for-the-badge&logo=three.js" />
-<img src="https://img.shields.io/badge/Vite-Build%20Tool-purple?style=for-the-badge&logo=vite" />
-
-</p>
-
 ---
 
 <p align="center">
