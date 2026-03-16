@@ -5,7 +5,7 @@
 ---
 
 <p align="center">
-<img src="https://readme-typing-svg.herokuapp.com?font=Orbitron&size=26&duration=3000&color=FF0080&center=true&vCenter=true&width=750&lines=Welcome+to+the+Spider-Verse;Interactive+3D+Developer+Portfolio;Explore+Projects+by+Web-Swinging;Built+with+React+Three+Fiber+%26+Three.js" />
+<img src="https://readme-typing-svg.herokuapp.com?font=Orbitron&size=26&duration=3000&color=FF0080&center=true&vCenter=true&width=750&lines=Explore+the+Immersive+3D+City;Web-Swing+Through+Projects;A+Game-Like+Developer+Portfolio" />
 </p>
 
 ---
@@ -50,31 +50,15 @@ Efficient rendering using instancing, lazy loading, and optimized textures for a
 
 # 🧠 Tech Stack
 
-## Frontend
-
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-
----
-
-## 3D Graphics
-
-![ThreeJS](https://img.shields.io/badge/Three.js-black?style=for-the-badge&logo=three.js)
-![React Three Fiber](https://img.shields.io/badge/React%20Three%20Fiber-ff69b4?style=for-the-badge)
-![Drei](https://img.shields.io/badge/React%20Three%20Drei-purple?style=for-the-badge)
-
----
-
-## Physics
-
-![Rapier](https://img.shields.io/badge/Rapier%20Physics-blueviolet?style=for-the-badge)
-
----
-
-## Animation
-
-![Framer Motion](https://img.shields.io/badge/Framer%20Motion-black?style=for-the-badge&logo=framer)
+<p align="left">
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+  <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" />
+  <img src="https://img.shields.io/badge/TailwindCSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" />
+  <img src="https://img.shields.io/badge/Three.js-black?style=for-the-badge&logo=three.js" />
+  <img src="https://img.shields.io/badge/React%20Three%20Fiber-ff69b4?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Rapier%20Physics-blueviolet?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Framer%20Motion-black?style=for-the-badge&logo=framer" />
+</p>
 
 ---
 
@@ -116,38 +100,36 @@ src/
 
 # ⚙️ Installation
 
-Clone the repository:
-```bash
-git clone https://github.com/RevanMidha/SpiderVerse-Portfolio.git
-cd SpiderVerse-Portfolio
-```
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/RevanMidha/SpiderVerse-Portfolio.git
+   cd SpiderVerse-Portfolio
+   ```
 
-Install dependencies:
-```bash
-npm install
-```
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-Run locally:
-```bash
-npm run dev
-```
-
-Build for production:
-```bash
-npm run build
-```
+3. **Run locally:**
+   ```bash
+   npm run dev
+   ```
 
 ---
 
 # 🚀 Deployment
 
-This project is deployed using **Vercel**.
+This project is optimized for deployment on **Vercel**.
 
-To deploy manually run:
+**Production Build:**  
 ```bash
 npm run build
 ```
-Then upload the generated **dist/** folder to your hosting provider.
+The production build is generated in the `dist/` folder and can be deployed to any static hosting provider.
+
+**Continuous Deployment:**  
+Connected via GitHub for automatic deployment to Vercel on every push to the `main` branch.
 
 ---
 
