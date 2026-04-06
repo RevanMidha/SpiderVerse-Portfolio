@@ -3,7 +3,7 @@ import { RigidBody, CuboidCollider } from '@react-three/rapier';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-export function CityEnvironment({ started }) {
+export function CityEnvironment({ started, performanceTier }) {
   const gridSize = 6;
   const blockSize = 28;
   const streetWidth = 14;
@@ -281,7 +281,7 @@ export function CityEnvironment({ started }) {
         ref={meshRef} 
         args={[null, null, buildings.length]} 
         receiveShadow 
-        castShadow
+        castShadow={performanceTier > 0}
         frustumCulled={false}
       >
         <boxGeometry args={[1, 1, 1]} />
@@ -305,7 +305,7 @@ export function CityEnvironment({ started }) {
       <instancedMesh 
         ref={trafficRef} 
         args={[null, null, trafficCount]} 
-        castShadow
+        castShadow={performanceTier > 0}
         frustumCulled={false}
       >
         <boxGeometry args={[1, 1, 1]} />

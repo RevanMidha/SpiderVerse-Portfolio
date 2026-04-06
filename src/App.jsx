@@ -1,6 +1,6 @@
 import React, { Suspense, useState, useRef, useCallback, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { KeyboardControls, Loader } from '@react-three/drei';
+import { KeyboardControls, Loader, PerformanceMonitor } from '@react-three/drei';
 import { Physics } from '@react-three/rapier';
 
 import { CityEnvironment } from './components/CityEnvironment';
@@ -31,6 +31,8 @@ export default function App() {
   const [started, setStarted] = useState(false);
   const [activePanel, setActivePanel] = useState(null);
   const [targetOrb, setTargetOrb] = useState(null);
+  const [dpr, setDpr] = useState(1);
+  const [performanceTier, setPerformanceTier] = useState(1);
 
   const soundtrackRef = useRef(null);
   const themeRef = useRef(null);
@@ -137,15 +139,21 @@ export default function App() {
           shadows
           camera={{ position: [0, 70, 120], fov: 70, near: 0.1, far: 2000 }}
           gl={{ antialias: false, logarithmicDepthBuffer: false }}
-          dpr={[1, 2]}
+          dpr={dpr}
         >
+          <PerformanceMonitor 
+            onChange={({ factor }) => {
+              setDpr(Math.max(0.5, Math.min(1.5, factor * 1.5)));
+              setPerformanceTier(factor > 0.5 ? 1 : 0);
+            }} 
+          />
           <color attach="background" args={[started ? '#1a0a2e' : '#050114']} />
 
           <Suspense fallback={null}>
-            <Atmosphere started={started} />
+            <Atmosphere started={started} performanceTier={performanceTier} />
             {started && (
               <Physics gravity={[0, -30, 0]}>
-                <CityEnvironment started={started} />
+                <CityEnvironment started={started} performanceTier={performanceTier} />
                 <PlayerCamera
                   started={started}
                   targetOrb={targetOrb}

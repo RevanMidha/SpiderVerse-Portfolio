@@ -177,7 +177,7 @@ function CheckpointOrb({ checkpoint, isActive, onClick }) {
         depthTest={false}
         renderOrder={10}
       >
-        {'[ CLICK TO SWING ]'}
+        {'[ TAP / CLICK TO SWING ]'}
         <meshBasicMaterial
           color="#cccccc"
           toneMapped={false}

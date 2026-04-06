@@ -91,7 +91,7 @@ function SparkParticles({ started }) {
   );
 }
 
-function VisualEffects({ started }) {
+function VisualEffects({ started, performanceTier }) {
   return (
     <EffectComposer disableNormalPass>
       <Bloom
@@ -100,11 +100,15 @@ function VisualEffects({ started }) {
         mipmapBlur
         intensity={started ? 1.0 : 1.5}
       />
-      <ChromaticAberration
-        blendFunction={BlendFunction.NORMAL}
-        offset={started ? [0.0002, 0.0002] : [0.001, 0.001]}
-      />
-      <Noise blendFunction={BlendFunction.OVERLAY} opacity={started ? 0.015 : 0.03} />
+      {performanceTier > 0 && (
+        <>
+          <ChromaticAberration
+            blendFunction={BlendFunction.NORMAL}
+            offset={started ? [0.0002, 0.0002] : [0.001, 0.001]}
+          />
+          <Noise blendFunction={BlendFunction.OVERLAY} opacity={started ? 0.015 : 0.03} />
+        </>
+      )}
       <Vignette eskil={false} offset={0.1} darkness={0.9} />
     </EffectComposer>
   );
@@ -153,7 +157,7 @@ function NeonClouds({ opacity = 0.12 }) {
   );
 }
 
-export function Atmosphere({ started }) {
+export function Atmosphere({ started, performanceTier }) {
   return (
     <>
       {/* ---- Lighting ---- */}
@@ -162,7 +166,7 @@ export function Atmosphere({ started }) {
         position={started ? [100, 200, 50] : [10, 50, -20]}
         intensity={started ? 1.2 : 1.5}
         color={started ? "#b088cc" : "#ff0055"}
-        castShadow
+        castShadow={performanceTier > 0}
         shadow-mapSize={[1024, 1024]}
         shadow-camera-far={400}
         shadow-camera-near={0.5}
@@ -211,7 +215,7 @@ export function Atmosphere({ started }) {
       {started && <SparkParticles started={started} />}
 
       {/* ---- Spider-Verse post-processing ---- */}
-      <VisualEffects started={started} />
+      <VisualEffects started={started} performanceTier={performanceTier} />
     </>
   );
 }

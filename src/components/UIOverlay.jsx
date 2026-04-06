@@ -124,7 +124,7 @@ export function UIOverlay({ started, checkpoints, soundtrackRef }) {
           }}
         >
           <p className="font-ui" style={{ fontSize: '0.65rem', margin: 0, color: '#aaa' }}>
-            <span style={{ color: '#00e5ff', fontWeight: 'bold' }}>CLICK ORBS</span> Open Panels
+            <span style={{ color: '#00e5ff', fontWeight: 'bold' }}>TAP ORBS</span> Open Panels &nbsp;|&nbsp; <span style={{ color: '#ff00cc', fontWeight: 'bold' }}>SWIPE/DRAG</span> Look
           </p>
         </div>
 

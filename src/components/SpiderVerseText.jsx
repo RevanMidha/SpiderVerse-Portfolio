@@ -355,7 +355,7 @@ export function TitleOverlay({ onStart, visible }) {
                 background: 'rgba(0,0,0,1)',
                 borderWidth: '4px',
                 borderStyle: 'solid',
-                padding: '16px 60px',
+                padding: 'clamp(12px, 3vw, 16px) clamp(30px, 8vw, 60px)',
                 fontSize: 'clamp(1rem, 1.5vw, 1.4rem)',
                 fontFamily: "'Outfit', sans-serif",
                 fontWeight: 900,
