@@ -4,6 +4,14 @@ import { RigidBody, CuboidCollider } from '@react-three/rapier';
 import * as THREE from 'three';
 import { MilesModel } from './MilesModel';
 
+// Reusable vectors to avoid per-frame allocations
+const _vec3A = new THREE.Vector3();
+const _vec3B = new THREE.Vector3();
+const _vec3C = new THREE.Vector3();
+const _vec3D = new THREE.Vector3();
+const _camTarget = new THREE.Vector3();
+const _unitY = new THREE.Vector3(0, 1, 0);
+
 const BUILDING_TOP_Y = 75; // Raised from 55 for better view
 const GROUND_Y = 3;
 
@@ -113,7 +121,7 @@ export function PlayerCamera({ started, targetOrb, onThwip }) {
     if (!playerRef.current) return;
     const body = playerRef.current;
     const pos = body.translation();
-    const currentPosVec = new THREE.Vector3(pos.x, pos.y, pos.z);
+    const currentPosVec = _vec3A.set(pos.x, pos.y, pos.z);
 
     // Track previous targetOrb to detect closing
     // If a panel was just closed, start the return swing
@@ -138,8 +146,8 @@ export function PlayerCamera({ started, targetOrb, onThwip }) {
     /* ---- Pre-start: static cinematic view ---- */
     if (!started) {
       // Even closer zoom for title screen
-      state.camera.position.lerp(new THREE.Vector3(0, BUILDING_TOP_Y + 15, 60), 0.03);
-      lookAtTarget.current.lerp(new THREE.Vector3(0, BUILDING_TOP_Y + 5, 0), 0.05);
+      state.camera.position.lerp(_vec3B.set(0, BUILDING_TOP_Y + 15, 60), 0.03);
+      lookAtTarget.current.lerp(_vec3C.set(0, BUILDING_TOP_Y + 5, 0), 0.05);
       state.camera.lookAt(lookAtTarget.current);
 
       // Keep Miles upside down on ledge
@@ -159,8 +167,8 @@ export function PlayerCamera({ started, targetOrb, onThwip }) {
       body.setLinvel({ x: 0, y: 0, z: 0 }, true);
 
       // Camera stay on Miles upside down (wide view)
-      state.camera.position.lerp(new THREE.Vector3(0, BUILDING_TOP_Y + 15, 90), 0.05);
-      lookAtTarget.current.lerp(new THREE.Vector3(0, BUILDING_TOP_Y + 7, 0), 0.08);
+      state.camera.position.lerp(_vec3B.set(0, BUILDING_TOP_Y + 15, 90), 0.05);
+      lookAtTarget.current.lerp(_vec3C.set(0, BUILDING_TOP_Y + 7, 0), 0.08);
       state.camera.lookAt(lookAtTarget.current);
 
       if (introTimer.current > 1.5) {
@@ -174,13 +182,13 @@ export function PlayerCamera({ started, targetOrb, onThwip }) {
     if (introPhase.current === 'falling') {
       introTimer.current += delta;
 
-      const targetPos = new THREE.Vector3(0, 45, 148); // In front of orbs
-      const startPos = new THREE.Vector3(0, BUILDING_TOP_Y + 7.5, 0);
+      const targetPos = _vec3B.set(0, 45, 148);
+      const startPos = _vec3C.set(0, BUILDING_TOP_Y + 7.5, 0);
 
       // Precision arc swing to destination
       if (introTimer.current < 2.5) {
         const t = Math.min(introTimer.current / 2.0, 1.0);
-        const lerpPos = new THREE.Vector3().lerpVectors(startPos, targetPos, t);
+        const lerpPos = _vec3D.lerpVectors(startPos, targetPos, t);
         body.setTranslation({ x: lerpPos.x, y: lerpPos.y, z: lerpPos.z }, true);
       } else {
         body.setTranslation({ x: targetPos.x, y: targetPos.y, z: targetPos.z }, true);
@@ -189,9 +197,8 @@ export function PlayerCamera({ started, targetOrb, onThwip }) {
       }
       body.setLinvel({ x: 0, y: 0, z: 0 }, true);
 
-      const camTargetPos = new THREE.Vector3(0, 55, 200);
-      state.camera.position.lerp(camTargetPos, 0.05);
-      lookAtTarget.current.lerp(new THREE.Vector3(0, 48, 110), 0.06);
+      state.camera.position.lerp(_vec3D.set(0, 55, 200), 0.05);
+      lookAtTarget.current.lerp(_camTarget.set(0, 48, 110), 0.06);
       state.camera.lookAt(lookAtTarget.current);
       return;
     }
@@ -205,14 +212,14 @@ export function PlayerCamera({ started, targetOrb, onThwip }) {
         
         const RETURN_DURATION = 1.5;
         const t = Math.min(returnTimer.current / RETURN_DURATION, 1.0);
-        const homePos = new THREE.Vector3(0, 45, 148);
+        const homePos = _vec3D.set(0, 45, 148);
         
         // Quadratic bezier: start -> anchor -> home
         const p0 = returnStart.current;
         const p1 = returnAnchor.current;
         const p2 = homePos;
         const oneMinusT = 1 - t;
-        const swingPos = new THREE.Vector3(
+        const swingPos = _camTarget.set(
           oneMinusT * oneMinusT * p0.x + 2 * oneMinusT * t * p1.x + t * t * p2.x,
           oneMinusT * oneMinusT * p0.y + 2 * oneMinusT * t * p1.y + t * t * p2.y,
           oneMinusT * oneMinusT * p0.z + 2 * oneMinusT * t * p1.z + t * t * p2.z
@@ -229,17 +236,17 @@ export function PlayerCamera({ started, targetOrb, onThwip }) {
         // Zoom in when swinging
         cameraDistance.current = THREE.MathUtils.lerp(cameraDistance.current, 22, 0.08);
 
-        const targetVec = new THREE.Vector3(...targetOrb);
-        const direction = new THREE.Vector3().subVectors(targetVec, currentPosVec).normalize();
+        const targetVec = _vec3B.set(...targetOrb);
+        const direction = _vec3C.subVectors(targetVec, currentPosVec).normalize();
         const dist = currentPosVec.distanceTo(targetVec);
 
         if (dist > 14) {
           body.setGravityScale(1, true); // <---------- gravity ON while swinging
           const desiredVel = direction.multiplyScalar(50);
           const currentVel = body.linvel();
-          const velDiff = new THREE.Vector3(
+          const velDiff = _vec3D.set(
             desiredVel.x - currentVel.x,
-            desiredVel.y - currentVel.y + 30 * delta, // Add gravity compensation
+            desiredVel.y - currentVel.y + 30 * delta,
             desiredVel.z - currentVel.z
           );
           body.applyImpulse(velDiff.multiplyScalar(0.8), true);
@@ -247,17 +254,16 @@ export function PlayerCamera({ started, targetOrb, onThwip }) {
           // Reached orb - hold position and float
           body.setGravityScale(0, true); // <---------- gravity OFF while hovering
           body.setLinvel({ x: 0, y: Math.sin(state.clock.elapsedTime * 2) * 1, z: 0 }, true);
-          const holdPos = new THREE.Vector3().subVectors(targetVec, currentPosVec).multiplyScalar(0.2);
+          const holdPos = _vec3D.subVectors(targetVec, currentPosVec).multiplyScalar(0.2);
           body.applyImpulse(holdPos, true);
         }
       } else {
         body.setGravityScale(0, true); // <---------- gravity OFF while hovering
         
         // Calculate goal position: central zone + sine wave bobbing
-        const targetPos = new THREE.Vector3(0, 45 + Math.sin(state.clock.elapsedTime * 1.5) * 1.5, 148);
+        const targetPos = _vec3B.set(0, 45 + Math.sin(state.clock.elapsedTime * 1.5) * 1.5, 148);
         
-        // Spring logic: Velocity proportional to distance
-        const desiredVel = new THREE.Vector3().subVectors(targetPos, currentPosVec).multiplyScalar(2.5);
+        const desiredVel = _vec3C.subVectors(targetPos, currentPosVec).multiplyScalar(2.5);
         
         const currentVel = body.linvel();
         body.setLinvel({
@@ -272,9 +278,8 @@ export function PlayerCamera({ started, targetOrb, onThwip }) {
     if (introPhase.current === 'playing') {
       if (isReturning.current || !targetOrb) {
         // IDLE / RETURNING: Maintain the cinematic wide-angle framing
-        const camTargetPos = new THREE.Vector3(0, 55, 200);
-        state.camera.position.lerp(camTargetPos, 0.05);
-        lookAtTarget.current.lerp(new THREE.Vector3(0, 48, 110), 0.06);
+        state.camera.position.lerp(_vec3B.set(0, 55, 200), 0.05);
+        lookAtTarget.current.lerp(_vec3C.set(0, 48, 110), 0.06);
         state.camera.lookAt(lookAtTarget.current);
       } else {
         // SWINGING: Active third-person dynamic camera
@@ -285,8 +290,8 @@ export function PlayerCamera({ started, targetOrb, onThwip }) {
         const camZ = pos.z - Math.cos(theta) * Math.cos(phi) * camDist;
         camY = Math.max(camY, GROUND_Y);
 
-        state.camera.position.lerp(new THREE.Vector3(camX, camY, camZ), 0.1);
-        lookAtTarget.current.lerp(new THREE.Vector3(pos.x, pos.y + 3, pos.z), 0.1);
+        state.camera.position.lerp(_vec3B.set(camX, camY, camZ), 0.1);
+        lookAtTarget.current.lerp(_vec3C.set(pos.x, pos.y + 3, pos.z), 0.1);
         state.camera.lookAt(lookAtTarget.current);
       }
     }
@@ -370,6 +375,10 @@ export function PlayerCamera({ started, targetOrb, onThwip }) {
   );
 }
 
+// Cached vectors for WebLine components
+const _wlStart = new THREE.Vector3();
+const _wlDir = new THREE.Vector3();
+
 function WebLine({ milesRef, target }) {
   const lineRef = useRef();
   const targetVec = useMemo(() => new THREE.Vector3(...target), [target]);
@@ -377,13 +386,14 @@ function WebLine({ milesRef, target }) {
   useFrame((state) => {
     if (!lineRef.current || !milesRef.current) return;
     const milesPos = milesRef.current.translation();
-    const start = new THREE.Vector3(milesPos.x, milesPos.y + 2, milesPos.z);
+    _wlStart.set(milesPos.x, milesPos.y + 2, milesPos.z);
 
-    const v = new THREE.Vector3().subVectors(targetVec, start);
-    const dist = v.length();
+    _wlDir.subVectors(targetVec, _wlStart);
+    const dist = _wlDir.length();
     lineRef.current.scale.set(1, dist, 1);
-    lineRef.current.position.copy(start).add(v.multiplyScalar(0.5));
-    lineRef.current.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), v.normalize());
+    lineRef.current.position.copy(_wlStart).add(_wlDir.multiplyScalar(0.5));
+    _wlDir.normalize();
+    lineRef.current.quaternion.setFromUnitVectors(_unitY, _wlDir);
 
     if (lineRef.current.material) {
       lineRef.current.material.opacity = 0.5 + Math.sin(state.clock.elapsedTime * 15) * 0.5;
@@ -405,6 +415,10 @@ function WebLine({ milesRef, target }) {
   );
 }
 
+// Cached vectors for ReturnWebLine
+const _rwlStart = new THREE.Vector3();
+const _rwlDir = new THREE.Vector3();
+
 function ReturnWebLine({ milesRef, anchorRef, active }) {
   const lineRef = useRef();
 
@@ -416,14 +430,15 @@ function ReturnWebLine({ milesRef, anchorRef, active }) {
     }
     lineRef.current.visible = true;
     const milesPos = milesRef.current.translation();
-    const start = new THREE.Vector3(milesPos.x, milesPos.y + 2, milesPos.z);
+    _rwlStart.set(milesPos.x, milesPos.y + 2, milesPos.z);
     const anchor = anchorRef.current;
 
-    const v = new THREE.Vector3().subVectors(anchor, start);
-    const dist = v.length();
+    _rwlDir.subVectors(anchor, _rwlStart);
+    const dist = _rwlDir.length();
     lineRef.current.scale.set(1, dist, 1);
-    lineRef.current.position.copy(start).add(v.multiplyScalar(0.5));
-    lineRef.current.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), v.normalize());
+    lineRef.current.position.copy(_rwlStart).add(_rwlDir.multiplyScalar(0.5));
+    _rwlDir.normalize();
+    lineRef.current.quaternion.setFromUnitVectors(_unitY, _rwlDir);
 
     lineRef.current.material.opacity = 0.5 + Math.sin(state.clock.elapsedTime * 15) * 0.5;
   });

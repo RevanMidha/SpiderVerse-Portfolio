@@ -147,7 +147,7 @@ export function TitleOverlay({ onStart, visible }) {
               opacity: { duration: 0.8 },
               y: { duration: 6, repeat: Infinity, ease: 'easeInOut' }
             }}
-            style={{ position: 'relative', zIndex: 10, textAlign: 'center', padding: '0 clamp(12px, 4vw, 24px)', maxWidth: '100%' }}
+            style={{ position: 'relative', zIndex: 10, textAlign: 'center', padding: '0 clamp(12px, 4vw, 24px)', maxWidth: '100%', width: '100%', boxSizing: 'border-box' }}
           >
             {/* Title with chromatic offset layers */}
             <div style={{
@@ -173,7 +173,7 @@ export function TitleOverlay({ onStart, visible }) {
                   top: '2px',
                   left: '50%',
                   x: '-50%',
-                  fontSize: 'clamp(4rem, 12vw, 10rem)',
+                  fontSize: 'clamp(2.5rem, 10vw, 10rem)',
                   color: '#ff0055',
                   margin: 0,
                   letterSpacing: 'clamp(2px, 1vw, 8px)',
@@ -202,7 +202,7 @@ export function TitleOverlay({ onStart, visible }) {
                   top: '-2px',
                   left: '50%',
                   x: '-50%',
-                  fontSize: 'clamp(4rem, 12vw, 10rem)',
+                  fontSize: 'clamp(2.5rem, 10vw, 10rem)',
                   color: '#00e5ff',
                   margin: 0,
                   letterSpacing: 'clamp(2px, 1vw, 8px)',
@@ -227,7 +227,7 @@ export function TitleOverlay({ onStart, visible }) {
                 }}
                 style={{
                   position: 'relative',
-                  fontSize: 'clamp(4rem, 12vw, 10rem)',
+                  fontSize: 'clamp(2.5rem, 10vw, 10rem)',
                   color: '#ffffff',
                   margin: 0,
                   letterSpacing: 'clamp(2px, 1vw, 8px)',

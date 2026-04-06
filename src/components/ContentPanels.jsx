@@ -230,7 +230,7 @@ export default function ContentPanels({ activePanel, onBack }) {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
           className="absolute inset-0 flex items-center justify-center p-3 sm:p-4 z-[300] pointer-events-auto"
-          style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(12px)' }}
+          style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(12px)', boxSizing: 'border-box' }}
           onClick={onBack}
         >
           <motion.div
@@ -244,11 +244,16 @@ export default function ContentPanels({ activePanel, onBack }) {
               mass: 0.8,
               opacity: { duration: 0.2 }
             }}
-            className="relative w-full max-w-xl rounded-2xl overflow-hidden mx-2"
+            className="relative w-full max-w-xl rounded-2xl overflow-hidden"
             style={{
               background: 'rgba(5,0,20,0.95)',
               border: `1px solid ${panel.color}35`,
               boxShadow: `0 0 60px ${panel.color}20, inset 0 0 60px ${panel.color}05`,
+              margin: '0 clamp(8px, 2vw, 16px)',
+              maxHeight: 'calc(100dvh - clamp(24px, 4vh, 48px))',
+              display: 'flex',
+              flexDirection: 'column',
+              boxSizing: 'border-box',
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -276,7 +281,7 @@ export default function ContentPanels({ activePanel, onBack }) {
               </button>
             </div>
 
-            <div className="p-3 sm:p-5 overflow-y-auto" style={{ maxHeight: 'clamp(60vh, 70dvh, 75vh)' }}>
+            <div className="p-3 sm:p-5 overflow-y-auto flex-1" style={{ maxHeight: 'clamp(50vh, 65dvh, 75vh)' }}>
               {panel.content}
             </div>
           </motion.div>

@@ -68,13 +68,13 @@ function CheckpointOrb({ checkpoint, isActive, onClick }) {
     <group ref={groupRef} position={checkpoint.position}>
       {/* Outer bubbly glow — reduced size to prevent text overlap */}
       <mesh ref={outerRef}>
-        <sphereGeometry args={[8, 32, 32]} />
+        <sphereGeometry args={[8, 16, 16]} />
         <meshBasicMaterial color={c.glow} transparent opacity={0.06} depthWrite={false} />
       </mesh>
 
       {/* Middle translucent sphere — reduced */}
       <mesh>
-        <sphereGeometry args={[5.5, 24, 24]} />
+        <sphereGeometry args={[5.5, 12, 12]} />
         <meshPhysicalMaterial
           color={c.main}
           transparent
@@ -95,7 +95,7 @@ function CheckpointOrb({ checkpoint, isActive, onClick }) {
         onPointerOver={(e) => { e.stopPropagation(); document.body.style.cursor = 'pointer'; }}
         onPointerOut={() => (document.body.style.cursor = 'auto')}
       >
-        <sphereGeometry args={[10, 16, 16]} />
+        <sphereGeometry args={[10, 8, 8]} />
         <meshBasicMaterial transparent opacity={0} depthWrite={false} />
       </mesh>
 
@@ -103,7 +103,7 @@ function CheckpointOrb({ checkpoint, isActive, onClick }) {
       <mesh
         ref={innerRef}
       >
-        <sphereGeometry args={[4.5, 20, 20]} />
+        <sphereGeometry args={[4.5, 12, 12]} />
         <meshStandardMaterial
           color={isActive ? '#ffffff' : c.main}
           emissive={c.main}
@@ -116,27 +116,27 @@ function CheckpointOrb({ checkpoint, isActive, onClick }) {
       <pointLight 
         color={c.main} 
         intensity={isActive ? 80 : 40} 
-        distance={60} 
+        distance={40} 
       />
 
       {/* Orbiting ring 1 */}
       <mesh ref={ring1Ref}>
-        <torusGeometry args={[5.5, 0.15, 8, 48]} />
+        <torusGeometry args={[5.5, 0.15, 6, 32]} />
         <meshBasicMaterial color={c.main} transparent opacity={0.35} toneMapped={false} />
       </mesh>
 
       {/* Orbiting ring 2 */}
       <mesh ref={ring2Ref}>
-        <torusGeometry args={[7, 0.1, 8, 48]} />
+        <torusGeometry args={[7, 0.1, 6, 32]} />
         <meshBasicMaterial color={c.main} transparent opacity={0.2} toneMapped={false} />
       </mesh>
 
       {/* Particle dots around the orb */}
-      {Array.from({ length: 8 }).map((_, i) => {
-        const angle = (i / 8) * Math.PI * 2;
+      {Array.from({ length: 6 }).map((_, i) => {
+        const angle = (i / 6) * Math.PI * 2;
         return (
           <mesh key={i} position={[Math.cos(angle) * 8, Math.sin(angle) * 8, 0]}>
-            <sphereGeometry args={[0.25, 6, 6]} />
+            <sphereGeometry args={[0.25, 4, 4]} />
             <meshBasicMaterial color={c.main} toneMapped={false} />
           </mesh>
         );

@@ -8,7 +8,8 @@
 body, html, #root {
   margin: 0;
   padding: 0;
-  width: 100vw;
+  width: 100%;
+  max-width: 100vw;
   height: 100vh;
   height: 100dvh; /* Dynamic viewport height — fixes mobile Safari address bar */
   overflow: hidden;

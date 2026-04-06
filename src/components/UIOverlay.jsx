@@ -16,6 +16,7 @@ export function UIOverlay({ started, checkpoints, soundtrackRef }) {
         flexDirection: 'column',
         justifyContent: 'space-between',
         padding: 'clamp(0.75rem, 3vw, 1.5rem)',
+        boxSizing: 'border-box',
         color: 'white',
         zIndex: 100,
       }}
@@ -127,9 +128,12 @@ export function UIOverlay({ started, checkpoints, soundtrackRef }) {
             border: '1px solid rgba(255, 0, 85, 0.3)',
             backdropFilter: 'blur(6px)',
             pointerEvents: 'none',
+            minWidth: 0,
+            flexShrink: 1,
+            overflow: 'hidden',
           }}
         >
-          <p className="font-ui" style={{ fontSize: 'clamp(0.5rem, 1.5vw, 0.65rem)', margin: 0, color: '#aaa' }}>
+          <p className="font-ui" style={{ fontSize: 'clamp(0.5rem, 1.5vw, 0.65rem)', margin: 0, color: '#aaa', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             <span style={{ color: '#00e5ff', fontWeight: 'bold' }}>TAP ORBS</span> Open Panels &nbsp;|&nbsp; <span style={{ color: '#ff00cc', fontWeight: 'bold' }}>SWIPE/DRAG</span> Look
           </p>
         </div>

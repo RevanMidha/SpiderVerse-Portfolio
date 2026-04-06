@@ -3,6 +3,9 @@ import { RigidBody, CuboidCollider } from '@react-three/rapier';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
+// Cached object for per-frame instanced mesh updates
+const _dummy = new THREE.Object3D();
+
 export function CityEnvironment({ started, performanceTier }) {
   const gridSize = 6;
   const blockSize = 28;
@@ -199,7 +202,6 @@ export function CityEnvironment({ started, performanceTier }) {
   useFrame((_, delta) => {
     if (!trafficRef.current || !started) return;
     const limit = gridSize * (blockSize + streetWidth);
-    const dummy = new THREE.Object3D();
 
     trafficData.forEach((t, i) => {
       t.pos.addScaledVector(t.dir, t.speed * delta);
@@ -209,13 +211,13 @@ export function CityEnvironment({ started, performanceTier }) {
       if (t.pos.z > limit) t.pos.z = -limit;
       if (t.pos.z < -limit) t.pos.z = limit;
 
-      dummy.position.copy(t.pos);
+      _dummy.position.copy(t.pos);
       // Car proportions — wider, flatter, longer
-      dummy.scale.set(2.2, 1, 4.5);
-      if (t.axis === 'z') dummy.rotation.set(0, 0, 0);
-      else dummy.rotation.set(0, Math.PI / 2, 0);
-      dummy.updateMatrix();
-      trafficRef.current.setMatrixAt(i, dummy.matrix);
+      _dummy.scale.set(2.2, 1, 4.5);
+      if (t.axis === 'z') _dummy.rotation.set(0, 0, 0);
+      else _dummy.rotation.set(0, Math.PI / 2, 0);
+      _dummy.updateMatrix();
+      trafficRef.current.setMatrixAt(i, _dummy.matrix);
       trafficRef.current.setColorAt(i, t.color);
     });
     trafficRef.current.instanceMatrix.needsUpdate = true;

@@ -123,7 +123,8 @@ export default function App() {
       tabIndex={0}
       style={{
         outline: 'none',
-        width: '100vw',
+        width: '100%',
+        maxWidth: '100vw',
         height: '100dvh',
         position: 'relative',
         overflow: 'hidden',

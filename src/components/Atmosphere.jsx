@@ -67,19 +67,20 @@ function SparkParticles({ started }) {
     return arr;
   }, []);
 
+  const _sparkDummy = useMemo(() => new THREE.Object3D(), []);
+
   useFrame((state, delta) => {
     if (!meshRef.current) return;
-    const dummy = new THREE.Object3D();
     data.forEach((c, i) => {
       c.pos[1] += c.speed * delta * 15;
       if (c.pos[1] > 100) c.pos[1] = 0;
-      dummy.position.set(...c.pos);
+      _sparkDummy.position.set(...c.pos);
       // Gentle wobble
-      dummy.position.x += Math.sin(state.clock.elapsedTime * 2 + i) * 0.05;
-      dummy.position.z += Math.cos(state.clock.elapsedTime * 2 + i) * 0.05;
-      dummy.scale.setScalar(0.2 + Math.random() * 0.15);
-      dummy.updateMatrix();
-      meshRef.current.setMatrixAt(i, dummy.matrix);
+      _sparkDummy.position.x += Math.sin(state.clock.elapsedTime * 2 + i) * 0.05;
+      _sparkDummy.position.z += Math.cos(state.clock.elapsedTime * 2 + i) * 0.05;
+      _sparkDummy.scale.setScalar(0.2 + Math.random() * 0.15);
+      _sparkDummy.updateMatrix();
+      meshRef.current.setMatrixAt(i, _sparkDummy.matrix);
     });
   });
 
