@@ -1,3 +1,4 @@
+import React from 'react';
 import { Github, ExternalLink, Mail, Linkedin, Twitter, ArrowLeft, Code, Zap, User, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -221,6 +222,9 @@ export default function ContentPanels({ activePanel, onBack }) {
 
   const Icon = panel.icon;
 
+  // Prevent accidental close when user is scrolling and finger drifts to backdrop
+  const touchMoved = React.useRef(false);
+
   return (
     <AnimatePresence mode="wait">
       {panel && (
@@ -231,7 +235,9 @@ export default function ContentPanels({ activePanel, onBack }) {
           transition={{ duration: 0.3 }}
           className="absolute inset-0 flex items-center justify-center p-3 sm:p-4 z-[300] pointer-events-auto"
           style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(12px)', boxSizing: 'border-box', touchAction: 'auto' }}
-          onClick={onBack}
+          onTouchStart={() => { touchMoved.current = false; }}
+          onTouchMove={() => { touchMoved.current = true; }}
+          onClick={() => { if (!touchMoved.current) onBack(); }}
         >
           <motion.div
             initial={{ scale: 0.5, y: 80, opacity: 0, rotateX: 15 }}
