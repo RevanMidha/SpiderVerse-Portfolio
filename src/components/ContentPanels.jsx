@@ -70,7 +70,7 @@ const panels = {
     icon: Code,
     color: '#ff00cc',
     content: (
-      <div className="space-y-3 sm:space-y-4 overflow-y-auto pr-1" style={{ maxHeight: 'clamp(50vh, 60dvh, 65vh)' }}>
+      <div className="space-y-3 sm:space-y-4 overflow-y-auto pr-1" style={{ maxHeight: 'clamp(50vh, 60dvh, 65vh)', touchAction: 'pan-y', WebkitOverflowScrolling: 'touch' }}>
 
         {/* Intro */}
         <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-3">
@@ -230,7 +230,7 @@ export default function ContentPanels({ activePanel, onBack }) {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
           className="absolute inset-0 flex items-center justify-center p-3 sm:p-4 z-[300] pointer-events-auto"
-          style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(12px)', boxSizing: 'border-box' }}
+          style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(12px)', boxSizing: 'border-box', touchAction: 'auto' }}
           onClick={onBack}
         >
           <motion.div
@@ -254,6 +254,7 @@ export default function ContentPanels({ activePanel, onBack }) {
               display: 'flex',
               flexDirection: 'column',
               boxSizing: 'border-box',
+              touchAction: 'auto',
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -281,7 +282,15 @@ export default function ContentPanels({ activePanel, onBack }) {
               </button>
             </div>
 
-            <div className="p-3 sm:p-5 overflow-y-auto flex-1" style={{ maxHeight: 'clamp(50vh, 65dvh, 75vh)' }}>
+            <div
+              className="p-3 sm:p-5 overflow-y-auto flex-1"
+              style={{
+                maxHeight: 'clamp(50vh, 65dvh, 75vh)',
+                touchAction: 'pan-y',
+                WebkitOverflowScrolling: 'touch',
+                overscrollBehavior: 'contain',
+              }}
+            >
               {panel.content}
             </div>
           </motion.div>
