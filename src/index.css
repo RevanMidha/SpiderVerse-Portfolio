@@ -10,9 +10,15 @@ body, html, #root {
   padding: 0;
   width: 100vw;
   height: 100vh;
+  height: 100dvh; /* Dynamic viewport height — fixes mobile Safari address bar */
   overflow: hidden;
-  background-color: #050114; /* Dark Spiderverse Background */
+  background-color: #050114;
   font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+  touch-action: none;            /* Prevent browser swipe-to-navigate / pull-to-refresh */
+  overscroll-behavior: none;     /* Prevent overscroll bounce */
+  -webkit-tap-highlight-color: transparent; /* Remove blue tap flash on mobile */
+  -webkit-touch-callout: none;   /* Prevent callout on long-press */
+  user-select: none;
 }
 
 .font-spider {

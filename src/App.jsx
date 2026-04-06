@@ -124,10 +124,11 @@ export default function App() {
       style={{
         outline: 'none',
         width: '100vw',
-        height: '100vh',
+        height: '100dvh',
         position: 'relative',
         overflow: 'hidden',
-        backgroundColor: '#050114'
+        backgroundColor: '#050114',
+        touchAction: 'none',
       }}
     >
       <audio ref={themeRef} src="/theme.mp3" loop preload="auto" autoPlay />

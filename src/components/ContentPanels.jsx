@@ -7,17 +7,17 @@ const panels = {
     icon: User,
     color: '#00e5ff',
     content: (
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Hero */}
-        <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-cyan-950/60 to-black border border-cyan-400/20 p-6">
+        <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-cyan-950/60 to-black border border-cyan-400/20 p-4 sm:p-6">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9IiMwMGYzZmYxNSIvPjwvc3ZnPg==')] opacity-30" />
-          <div className="relative z-10 flex items-center gap-5">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-3xl font-black text-white shadow-lg shadow-cyan-500/40">
+          <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-center gap-4 sm:gap-5">
+            <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-2xl sm:text-3xl font-black text-white shadow-lg shadow-cyan-500/40 flex-shrink-0">
               🕷️
             </div>
-            <div>
-              <h2 className="text-2xl font-heading text-white tracking-widest">REVAN MIDHA</h2>
-              <p className="text-cyan-400 text-sm font-bold tracking-wider mt-1">WITH GREAT CODE COMES GREAT RESPONSIBILITY</p>
+            <div className="text-center sm:text-left">
+              <h2 className="text-xl sm:text-2xl font-heading text-white tracking-widest">REVAN MIDHA</h2>
+              <p className="text-cyan-400 text-xs sm:text-sm font-bold tracking-wider mt-1">WITH GREAT CODE COMES GREAT RESPONSIBILITY</p>
               <div className="flex gap-2 mt-2 flex-wrap">
                 <span className="bg-cyan-500/20 text-cyan-300 text-xs font-bold px-2 py-0.5 rounded border border-cyan-500/30">Full-Stack Development</span>
                 <span className="bg-cyan-500/20 text-cyan-300 text-xs font-bold px-2 py-0.5 rounded border border-cyan-500/30">Cybersecurity</span>
@@ -45,7 +45,7 @@ const panels = {
         </div>
 
         {/* Skills */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
           {[
             ['💻 Languages', 'Python, JavaScript'],
             ['🎨 Frontend', 'React, Next.js, HTML, CSS, Tailwind CSS'],
@@ -55,7 +55,7 @@ const panels = {
             ['🛠️ Tools', 'Git, Docker, Linux'],
             ['📝 Other Languages', 'Basic C++, Java'],
           ].map(([title, skills]) => (
-            <div key={title} className="bg-white/5 border border-white/10 rounded-lg p-3">
+            <div key={title} className="bg-white/5 border border-white/10 rounded-lg p-2.5 sm:p-3">
               <p className="text-cyan-400 font-heading text-xs tracking-wider mb-1">{title}</p>
               <p className="text-zinc-400 text-xs">{skills}</p>
             </div>
@@ -70,7 +70,7 @@ const panels = {
     icon: Code,
     color: '#ff00cc',
     content: (
-      <div className="space-y-4 overflow-y-auto max-h-[65vh] pr-1">
+      <div className="space-y-3 sm:space-y-4 overflow-y-auto pr-1" style={{ maxHeight: 'clamp(50vh, 60dvh, 65vh)' }}>
 
         {/* Intro */}
         <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-3">
@@ -229,7 +229,7 @@ export default function ContentPanels({ activePanel, onBack }) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="absolute inset-0 flex items-center justify-center p-4 z-[300] pointer-events-auto"
+          className="absolute inset-0 flex items-center justify-center p-3 sm:p-4 z-[300] pointer-events-auto"
           style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(12px)' }}
           onClick={onBack}
         >
@@ -244,7 +244,7 @@ export default function ContentPanels({ activePanel, onBack }) {
               mass: 0.8,
               opacity: { duration: 0.2 }
             }}
-            className="relative w-full max-w-xl rounded-2xl overflow-hidden"
+            className="relative w-full max-w-xl rounded-2xl overflow-hidden mx-2"
             style={{
               background: 'rgba(5,0,20,0.95)',
               border: `1px solid ${panel.color}35`,
@@ -255,13 +255,13 @@ export default function ContentPanels({ activePanel, onBack }) {
             <div className="absolute inset-0 pointer-events-none opacity-5"
               style={{ background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.05) 2px, rgba(255,255,255,0.05) 4px)' }} />
 
-            <div className="flex items-center gap-3 p-5 border-b border-white/10"
+            <div className="flex items-center gap-2 sm:gap-3 p-3 sm:p-5 border-b border-white/10"
               style={{ background: `linear-gradient(135deg, ${panel.color}15, transparent)` }}>
               <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: `${panel.color}20`, border: `1px solid ${panel.color}40` }}>
                 <Icon className="w-5 h-5" style={{ color: panel.color }} />
               </div>
               <div>
-                <h2 className="text-sm font-heading tracking-widest text-white leading-none mb-1">{panel.title}</h2>
+                <h2 className="text-xs sm:text-sm font-heading tracking-widest text-white leading-none mb-1">{panel.title}</h2>
                 <div className="flex gap-1.5 mt-0.5">
                   {[...Array(3)].map((_, i) => (
                     <div key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: i === 0 ? panel.color : '#ffffff30' }} />
@@ -276,7 +276,7 @@ export default function ContentPanels({ activePanel, onBack }) {
               </button>
             </div>
 
-            <div className="p-5 overflow-y-auto max-h-[75vh]">
+            <div className="p-3 sm:p-5 overflow-y-auto" style={{ maxHeight: 'clamp(60vh, 70dvh, 75vh)' }}>
               {panel.content}
             </div>
           </motion.div>

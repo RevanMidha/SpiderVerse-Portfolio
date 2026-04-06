@@ -122,6 +122,7 @@ export function TitleOverlay({ onStart, visible }) {
             overflow: 'hidden',
             background: 'rgba(5, 0, 20, 0.8)',
             backdropFilter: 'blur(4px)',
+            touchAction: 'manipulation',
           }}
         >
           {/* Background Layers */}
@@ -146,12 +147,12 @@ export function TitleOverlay({ onStart, visible }) {
               opacity: { duration: 0.8 },
               y: { duration: 6, repeat: Infinity, ease: 'easeInOut' }
             }}
-            style={{ position: 'relative', zIndex: 10, textAlign: 'center' }}
+            style={{ position: 'relative', zIndex: 10, textAlign: 'center', padding: '0 clamp(12px, 4vw, 24px)', maxWidth: '100%' }}
           >
             {/* Title with chromatic offset layers */}
             <div style={{
               position: 'relative',
-              marginBottom: '30px',
+              marginBottom: 'clamp(15px, 4vw, 30px)',
               pointerEvents: 'none',
             }}>
               {/* Glitch Layer 1 (Red) */}
@@ -175,7 +176,7 @@ export function TitleOverlay({ onStart, visible }) {
                   fontSize: 'clamp(4rem, 12vw, 10rem)',
                   color: '#ff0055',
                   margin: 0,
-                  letterSpacing: '8px',
+                  letterSpacing: 'clamp(2px, 1vw, 8px)',
                   userSelect: 'none',
                   whiteSpace: 'nowrap',
                 }}
@@ -204,7 +205,7 @@ export function TitleOverlay({ onStart, visible }) {
                   fontSize: 'clamp(4rem, 12vw, 10rem)',
                   color: '#00e5ff',
                   margin: 0,
-                  letterSpacing: '8px',
+                  letterSpacing: 'clamp(2px, 1vw, 8px)',
                   userSelect: 'none',
                   whiteSpace: 'nowrap',
                 }}
@@ -229,7 +230,7 @@ export function TitleOverlay({ onStart, visible }) {
                   fontSize: 'clamp(4rem, 12vw, 10rem)',
                   color: '#ffffff',
                   margin: 0,
-                  letterSpacing: '8px',
+                  letterSpacing: 'clamp(2px, 1vw, 8px)',
                   textShadow: '3px 3px 0px #000, 0 0 25px rgba(255, 0, 85, 1)',
                   WebkitTextStroke: '2px #000',
                   userSelect: 'none',
@@ -250,7 +251,7 @@ export function TitleOverlay({ onStart, visible }) {
                 flexDirection: 'column',
                 alignItems: 'center',
                 gap: '8px',
-                marginBottom: '40px',
+                marginBottom: 'clamp(20px, 5vw, 40px)',
                 pointerEvents: 'none',
               }}
             >
@@ -274,7 +275,7 @@ export function TitleOverlay({ onStart, visible }) {
                   fontSize: 'clamp(1rem, 2.5vw, 1.5rem)',
                   color: '#ffffff',
                   margin: 0,
-                  letterSpacing: '6px',
+                  letterSpacing: 'clamp(2px, 1vw, 6px)',
                   fontWeight: 900,
                   textTransform: 'uppercase',
                   fontStyle: 'italic'
@@ -291,7 +292,7 @@ export function TitleOverlay({ onStart, visible }) {
                   fontSize: 'clamp(0.88rem, 1.75vw, 1.17rem)',
                   color: '#aaaacc',
                   margin: '4px 0 0 0',
-                  letterSpacing: '3px',
+                  letterSpacing: 'clamp(1px, 0.5vw, 3px)',
                   fontWeight: 500,
                   fontStyle: 'normal',
                   textTransform: 'none',
@@ -359,7 +360,7 @@ export function TitleOverlay({ onStart, visible }) {
                 fontSize: 'clamp(1rem, 1.5vw, 1.4rem)',
                 fontFamily: "'Outfit', sans-serif",
                 fontWeight: 900,
-                letterSpacing: '4px',
+                letterSpacing: 'clamp(1px, 0.5vw, 4px)',
                 cursor: 'pointer',
                 textShadow: '2px 2px 0px #000',
                 boxShadow: '0 0 20px rgba(0,229,255,0.3)',
