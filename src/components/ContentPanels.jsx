@@ -1,6 +1,36 @@
 import React from 'react';
-import { Github, ExternalLink, Mail, Linkedin, Twitter, ArrowLeft, Code, Zap, User, Download } from 'lucide-react';
+import { Github, ExternalLink, Mail, Linkedin, ArrowLeft, Code, Zap, User, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+function ProjectLink({ href, color, icon: Icon, children, variant = 'primary' }) {
+  const isMissing = !href || href === '#';
+  const baseClass = 'pointer-events-auto flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-lg transition-all';
+  const style = variant === 'primary'
+    ? { background: `${color}25`, color, border: `1px solid ${color}40` }
+    : undefined;
+  const className = variant === 'primary'
+    ? baseClass
+    : `${baseClass} bg-white/5 hover:bg-white/10 text-zinc-300 border border-white/10`;
+
+  if (isMissing) {
+    return (
+      <span
+        className={`${className} opacity-50 cursor-not-allowed`}
+        style={style}
+        aria-disabled="true"
+        title="Link not added yet"
+      >
+        <Icon className="w-3 h-3" /> {children}
+      </span>
+    );
+  }
+
+  return (
+    <a href={href} target="_blank" rel="noreferrer" className={className} style={style}>
+      <Icon className="w-3 h-3" /> {children}
+    </a>
+  );
+}
 
 const panels = {
   about: {
@@ -141,19 +171,15 @@ const panels = {
           <div key={p.name} className="group rounded-xl overflow-hidden border border-white/10 hover:border-pink-500/40 bg-white/5 hover:bg-white/8 transition-all duration-300">
             <div className="p-4">
               <h3 className="text-base font-heading tracking-widest mb-2" style={{ color: p.color, textShadow: `0 0 15px ${p.color}` }}>{p.name}</h3>
-              <p className="text-zinc-400 text-xs leading-relaxed mb-3" style={{ textAlign: 'justify' }}>{p.desc}</p>
+              <div className="text-zinc-400 text-xs leading-relaxed mb-3" style={{ textAlign: 'justify' }}>{p.desc}</div>
               <div className="flex flex-wrap gap-1 mb-3">
                 {p.tech.map(t => (
                   <span key={t} className="text-xs font-bold px-2 py-0.5 rounded" style={{ background: `${p.color}20`, color: p.color, border: `1px solid ${p.color}40` }}>{t}</span>
                 ))}
               </div>
               <div className="flex gap-2">
-                <a href={p.live} className="pointer-events-auto flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-lg transition-all" style={{ background: `${p.color}25`, color: p.color, border: `1px solid ${p.color}40` }}>
-                  <ExternalLink className="w-3 h-3" /> Live
-                </a>
-                <a href={p.code} target="_blank" rel="noreferrer" className="pointer-events-auto flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-zinc-300 border border-white/10 transition-all">
-                  <Github className="w-3 h-3" /> Code
-                </a>
+                <ProjectLink href={p.live} color={p.color} icon={ExternalLink}>Live</ProjectLink>
+                <ProjectLink href={p.code} color={p.color} icon={Github} variant="secondary">Code</ProjectLink>
               </div>
             </div>
           </div>
@@ -181,15 +207,16 @@ const panels = {
         <div className="flex gap-3 flex-wrap">
           <a href="https://github.com/RevanMidha" target="_blank" rel="noreferrer"
             className="flex items-center gap-2 bg-white/5 hover:bg-zinc-800/80 border border-white/10 hover:border-zinc-500/50 text-white text-sm font-bold px-4 py-2.5 rounded-lg transition-all duration-200 pointer-events-auto hover:shadow-[0_0_20px_rgba(150,150,150,0.3)]">
-            <get_resource_uri server="default_api" uri="mcp://default_api/file:///d%3A/Studyy/SpiderVerse-Portfolio/src/components/ContentPanels.jsx#L170" /> GitHub
+            <Github className="w-4 h-4" /> GitHub
           </a>
           <a href="https://www.linkedin.com/in/revan-midha-302a542a3" target="_blank" rel="noreferrer"
             className="flex items-center gap-2 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-600/30 hover:border-blue-400/60 text-blue-300 text-sm font-bold px-4 py-2.5 rounded-lg transition-all duration-200 pointer-events-auto hover:shadow-[0_0_20px_rgba(37,99,235,0.4)]">
-            <get_resource_uri server="default_api" uri="mcp://default_api/file:///d%3A/Studyy/SpiderVerse-Portfolio/src/components/ContentPanels.jsx#L174" /> LinkedIn
+            <Linkedin className="w-4 h-4" /> LinkedIn
           </a>
-          <div className="flex items-center gap-2 bg-teal-600/20 border border-teal-600/30 text-teal-300 text-sm font-bold px-4 py-2.5 rounded-lg select-all shadow-[0_0_15px_rgba(20,184,166,0.1)]">
-            <get_resource_uri server="default_api" uri="mcp://default_api/file:///d%3A/Studyy/SpiderVerse-Portfolio/src/components/ContentPanels.jsx#L177" /> revi.midha@gmail.com
-          </div>
+          <a href="mailto:revi.midha@gmail.com"
+            className="flex items-center gap-2 bg-teal-600/20 hover:bg-teal-600/40 border border-teal-600/30 hover:border-teal-400/60 text-teal-300 text-sm font-bold px-4 py-2.5 rounded-lg pointer-events-auto shadow-[0_0_15px_rgba(20,184,166,0.1)]">
+            <Mail className="w-4 h-4" /> revi.midha@gmail.com
+          </a>
         </div>
 
         {/* Resume Download */}

@@ -8,4 +8,16 @@ export default defineConfig({
     tailwindcss(),
     react()
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          three: ['three', '@react-three/fiber', '@react-three/drei'],
+          effects: ['@react-three/postprocessing', 'postprocessing'],
+          physics: ['@react-three/rapier'],
+          motion: ['framer-motion'],
+        },
+      },
+    },
+  },
 })

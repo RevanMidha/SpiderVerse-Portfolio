@@ -6,10 +6,11 @@ import * as THREE from 'three';
 // Cached object for per-frame instanced mesh updates
 const _dummy = new THREE.Object3D();
 
-export function CityEnvironment({ started, performanceTier }) {
+export function CityEnvironment({ started, performanceTier, deviceProfile }) {
   const gridSize = 6;
   const blockSize = 28;
   const streetWidth = 14;
+  const trafficCount = deviceProfile?.isCompact ? 32 : 40;
 
   /* ---- Window texture ---- */
   const windowTexture = useMemo(() => {
@@ -155,7 +156,6 @@ export function CityEnvironment({ started, performanceTier }) {
   }, [buildings]);
 
   /* ---- Traffic — cars stay on roads, avoid buildings ---- */
-  const trafficCount = 40;
   const trafficRef = useRef();
 
   const carColors = useMemo(() => [
@@ -197,14 +197,20 @@ export function CityEnvironment({ started, performanceTier }) {
       });
     }
     return data;
-  }, [carColors]);
+  }, [carColors, trafficCount]);
+
+  const trafficFrame = useRef(0);
 
   useFrame((_, delta) => {
     if (!trafficRef.current || !started) return;
+    trafficFrame.current += 1;
+    if (deviceProfile?.isCompact && trafficFrame.current % 2 !== 0) return;
+
     const limit = gridSize * (blockSize + streetWidth);
+    const step = deviceProfile?.isCompact ? delta * 2 : delta;
 
     trafficData.forEach((t, i) => {
-      t.pos.addScaledVector(t.dir, t.speed * delta);
+      t.pos.addScaledVector(t.dir, t.speed * step);
       // Wrap around
       if (t.pos.x > limit) t.pos.x = -limit;
       if (t.pos.x < -limit) t.pos.x = limit;
@@ -282,10 +288,9 @@ export function CityEnvironment({ started, performanceTier }) {
       <instancedMesh 
         ref={meshRef} 
         args={[null, null, buildings.length]} 
-        receiveShadow 
-        castShadow={performanceTier > 0}
-        frustumCulled={false}
-      >
+      receiveShadow 
+      castShadow={performanceTier > 0}
+    >
         <boxGeometry args={[1, 1, 1]} />
         <meshStandardMaterial 
           map={windowTexture} 
@@ -308,7 +313,6 @@ export function CityEnvironment({ started, performanceTier }) {
         ref={trafficRef} 
         args={[null, null, trafficCount]} 
         castShadow={performanceTier > 0}
-        frustumCulled={false}
       >
         <boxGeometry args={[1, 1, 1]} />
         <meshStandardMaterial roughness={0.3} metalness={0.6} />
@@ -336,7 +340,7 @@ function NeonAccents({ buildings }) {
   }, [neonBuildings]);
 
   return (
-    <instancedMesh ref={meshRef} args={[null, null, neonBuildings.length]} frustumCulled={false}>
+    <instancedMesh ref={meshRef} args={[null, null, neonBuildings.length]}>
       <boxGeometry args={[1, 1, 1]} />
       <meshBasicMaterial toneMapped={false} vertexColors />
     </instancedMesh>
@@ -368,11 +372,11 @@ function InstancedStreetLights({ lights }) {
 
   return (
     <group>
-      <instancedMesh ref={poleRef} args={[null, null, lights.length]} frustumCulled={false}>
+      <instancedMesh ref={poleRef} args={[null, null, lights.length]}>
         <cylinderGeometry args={[0.15, 0.2, 10, 4]} />
         <meshStandardMaterial color="#444455" metalness={0.6} roughness={0.4} />
       </instancedMesh>
-      <instancedMesh ref={bulbRef} args={[null, null, lights.length]} frustumCulled={false}>
+      <instancedMesh ref={bulbRef} args={[null, null, lights.length]}>
         <sphereGeometry args={[0.5, 6, 6]} />
         <meshBasicMaterial color="#ffeeaa" toneMapped={false} />
       </instancedMesh>

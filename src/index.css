@@ -22,12 +22,22 @@ body, html, #root {
   user-select: none;
 }
 
+body {
+  position: fixed;
+  inset: 0;
+}
+
+canvas {
+  display: block;
+  touch-action: none;
+}
+
 .font-spider {
   font-family: 'Kanit', sans-serif;
   font-weight: 900;
   font-style: italic;
   text-transform: uppercase;
-  letter-spacing: -2px;
+  letter-spacing: 0;
 }
 
 .font-ui {
@@ -108,4 +118,11 @@ body, html, #root {
   pointer-events: none;
   z-index: 52;
   opacity: 0.3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .vignette-overlay {
+    animation: none;
+  }
 }

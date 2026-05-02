@@ -1,15 +1,14 @@
-import React, { Suspense, useState, useRef, useCallback, useEffect } from 'react';
+import React, { Suspense, lazy, useState, useRef, useCallback, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { KeyboardControls, Loader, PerformanceMonitor } from '@react-three/drei';
-import { Physics } from '@react-three/rapier';
 
-import { CityEnvironment } from './components/CityEnvironment';
-import { PlayerCamera } from './components/PlayerCamera';
 import { Atmosphere } from './components/Atmosphere';
 import { TitleOverlay } from './components/SpiderVerseText';
-import { Checkpoints } from './components/Checkpoints';
 import { UIOverlay } from './components/UIOverlay';
-import ContentPanels from './components/ContentPanels';
+import { useDevicePerformance } from './hooks/useDevicePerformance';
+
+const ContentPanels = lazy(() => import('./components/ContentPanels'));
+const StartedWorld = lazy(() => import('./components/StartedWorld'));
 
 const keyboardMap = [
   { name: 'forward', keys: ['ArrowUp', 'KeyW'] },
@@ -28,15 +27,21 @@ const checkpoints = [
 ];
 
 export default function App() {
+  const deviceProfile = useDevicePerformance();
   const [started, setStarted] = useState(false);
   const [activePanel, setActivePanel] = useState(null);
   const [targetOrb, setTargetOrb] = useState(null);
-  const [dpr, setDpr] = useState(1);
-  const [performanceTier, setPerformanceTier] = useState(1);
+  const [dpr, setDpr] = useState(deviceProfile.maxDpr);
+  const [performanceTier, setPerformanceTier] = useState(deviceProfile.tier);
 
   const soundtrackRef = useRef(null);
   const themeRef = useRef(null);
   const thwipRef = useRef(null);
+
+  useEffect(() => {
+    setDpr((current) => Math.min(current, deviceProfile.maxDpr));
+    setPerformanceTier((current) => Math.min(current, deviceProfile.tier));
+  }, [deviceProfile]);
 
   // Centralized Audio Management
   useEffect(() => {
@@ -45,21 +50,11 @@ export default function App() {
     if (!theme || !soundtrack) return;
 
     if (!started) {
-      // Setup: Try to auto-play theme immediately unmuted!
-      theme.volume = 0.4;
-      theme.muted = false;
-      theme.play().catch(() => { 
-        // If autoplay is blocked by browser policies, keep it muted to allow background playback
-        // until a user interacts.
-        theme.muted = true;
-        theme.play().catch(() => {});
-      });
-
       const triggerMusic = () => {
         if (!started) {
+          theme.volume = 0.35;
           theme.muted = false;
           theme.play().catch(() => { });
-          // Immediately clean up global listeners after first trigger
           window.removeEventListener('mousedown', triggerMusic);
           window.removeEventListener('keydown', triggerMusic);
           window.removeEventListener('touchstart', triggerMusic);
@@ -132,46 +127,53 @@ export default function App() {
         touchAction: 'none',
       }}
     >
-      <audio ref={themeRef} src="/theme.mp3" loop preload="auto" autoPlay />
-      <audio ref={soundtrackRef} src="/soundtrack.mp3" loop preload="auto" />
-      <audio ref={thwipRef} src="/thwip.mp3" preload="auto" />
+      <audio ref={themeRef} src="/theme.mp3" loop preload="none" />
+      <audio ref={soundtrackRef} src="/soundtrack.mp3" loop preload="none" />
+      <audio ref={thwipRef} src="/thwip.mp3" preload="metadata" />
 
       <KeyboardControls map={keyboardMap}>
         <Canvas
           shadows
           camera={{ position: [0, 70, 120], fov: 70, near: 0.1, far: 2000 }}
-          gl={{ antialias: false, logarithmicDepthBuffer: false }}
+          gl={{
+            antialias: false,
+            alpha: false,
+            depth: true,
+            stencil: false,
+            logarithmicDepthBuffer: false,
+            powerPreference: 'high-performance',
+            preserveDrawingBuffer: false,
+          }}
           dpr={dpr}
+          performance={{ min: 0.5 }}
         >
           <PerformanceMonitor 
             onChange={({ factor }) => {
-              setDpr(Math.max(0.5, Math.min(1.5, factor * 1.5)));
-              setPerformanceTier(factor > 0.5 ? 1 : 0);
+              setDpr(Math.max(0.75, Math.min(deviceProfile.maxDpr, factor * deviceProfile.maxDpr)));
+              setPerformanceTier(factor > 0.55 ? deviceProfile.tier : 0);
             }} 
           />
           <color attach="background" args={[started ? '#1a0a2e' : '#050114']} />
 
           <Suspense fallback={null}>
-            <Atmosphere started={started} performanceTier={performanceTier} />
+            <Atmosphere
+              started={started}
+              performanceTier={performanceTier}
+              deviceProfile={deviceProfile}
+            />
             {started && (
-              <Physics gravity={[0, -30, 0]}>
-                <CityEnvironment started={started} performanceTier={performanceTier} />
-                <PlayerCamera
-                  started={started}
-                  targetOrb={targetOrb}
-                  onThwip={playThwip}
-                />
-                <Checkpoints
-                  started={started}
-                  checkpoints={checkpoints}
-                  onSelectCheckpoint={(cp) => {
-                    playThwip();
-                    setTargetOrb(cp.position);
-                    setTimeout(() => setActivePanel(cp.panelKey), 800);
-                  }}
-                  activeTarget={null}
-                />
-              </Physics>
+              <StartedWorld
+                checkpoints={checkpoints}
+                deviceProfile={deviceProfile}
+                performanceTier={performanceTier}
+                targetOrb={targetOrb}
+                onThwip={playThwip}
+                onSelectCheckpoint={(cp) => {
+                  playThwip();
+                  setTargetOrb(cp.position);
+                  setTimeout(() => setActivePanel(cp.panelKey), 800);
+                }}
+              />
             )}
           </Suspense>
         </Canvas>
@@ -179,13 +181,17 @@ export default function App() {
 
       <TitleOverlay onStart={handleStart} visible={!started} />
       <UIOverlay started={started} checkpoints={checkpoints} soundtrackRef={soundtrackRef} />
-      <ContentPanels
-        activePanel={activePanel}
-        onBack={() => {
-          setActivePanel(null);
-          setTargetOrb(null);
-        }}
-      />
+      {activePanel && (
+        <Suspense fallback={null}>
+          <ContentPanels
+            activePanel={activePanel}
+            onBack={() => {
+              setActivePanel(null);
+              setTargetOrb(null);
+            }}
+          />
+        </Suspense>
+      )}
       <Loader />
     </div>
   );

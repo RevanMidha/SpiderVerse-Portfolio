@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useEffect } from 'react';
 import { Stars } from '@react-three/drei';
 import {
   EffectComposer,
@@ -6,12 +6,10 @@ import {
   ChromaticAberration,
   Noise,
   Vignette,
-  Scanline,
 } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
 import * as THREE from 'three';
 
-import { useRef, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 
 /* ---- Spider-Verse Stylized Moon ---- */
@@ -50,8 +48,9 @@ function StylizedMoon({ started }) {
 }
 
 /* ---- Floating Sparks (Dimension Glitch Particles) ---- */
-function SparkParticles({ started }) {
+function SparkParticles({ started, deviceProfile }) {
   const meshRef = useRef();
+  const frame = useRef(0);
   const data = useMemo(() => {
     const arr = [];
     for (let i = 0; i < 60; i++) {
@@ -62,6 +61,8 @@ function SparkParticles({ started }) {
           (Math.random() - 0.5) * 100,
         ],
         speed: 0.1 + Math.random() * 0.2,
+        scale: 0.2 + Math.random() * 0.15,
+        phase: Math.random() * Math.PI * 2,
       });
     }
     return arr;
@@ -71,17 +72,21 @@ function SparkParticles({ started }) {
 
   useFrame((state, delta) => {
     if (!meshRef.current) return;
+    frame.current += 1;
+    if (deviceProfile?.isCompact && frame.current % 2 !== 0) return;
+
+    const step = deviceProfile?.isCompact ? delta * 2 : delta;
     data.forEach((c, i) => {
-      c.pos[1] += c.speed * delta * 15;
+      c.pos[1] += c.speed * step * 15;
       if (c.pos[1] > 100) c.pos[1] = 0;
       _sparkDummy.position.set(...c.pos);
-      // Gentle wobble
-      _sparkDummy.position.x += Math.sin(state.clock.elapsedTime * 2 + i) * 0.05;
-      _sparkDummy.position.z += Math.cos(state.clock.elapsedTime * 2 + i) * 0.05;
-      _sparkDummy.scale.setScalar(0.2 + Math.random() * 0.15);
+      _sparkDummy.position.x += Math.sin(state.clock.elapsedTime * 2 + c.phase) * 0.05;
+      _sparkDummy.position.z += Math.cos(state.clock.elapsedTime * 2 + c.phase) * 0.05;
+      _sparkDummy.scale.setScalar(c.scale);
       _sparkDummy.updateMatrix();
       meshRef.current.setMatrixAt(i, _sparkDummy.matrix);
     });
+    meshRef.current.instanceMatrix.needsUpdate = true;
   });
 
   return (
@@ -94,7 +99,7 @@ function SparkParticles({ started }) {
 
 function VisualEffects({ started, performanceTier }) {
   return (
-    <EffectComposer disableNormalPass>
+    <EffectComposer disableNormalPass multisampling={0}>
       <Bloom
         luminanceThreshold={0.4}
         luminanceSmoothing={0.4}
@@ -158,7 +163,9 @@ function NeonClouds({ opacity = 0.12 }) {
   );
 }
 
-export function Atmosphere({ started, performanceTier }) {
+export function Atmosphere({ started, performanceTier, deviceProfile }) {
+  const shadowSize = deviceProfile?.isCompact ? 512 : 1024;
+
   return (
     <>
       {/* ---- Lighting ---- */}
@@ -168,7 +175,7 @@ export function Atmosphere({ started, performanceTier }) {
         intensity={started ? 1.2 : 1.5}
         color={started ? "#b088cc" : "#ff0055"}
         castShadow={performanceTier > 0}
-        shadow-mapSize={[1024, 1024]}
+        shadow-mapSize={[shadowSize, shadowSize]}
         shadow-camera-far={400}
         shadow-camera-near={0.5}
         shadow-camera-left={-150}
@@ -213,7 +220,7 @@ export function Atmosphere({ started, performanceTier }) {
       <StylizedMoon started={started} />
 
       {started && <NeonClouds opacity={0.08} />}
-      {started && <SparkParticles started={started} />}
+      {started && <SparkParticles started={started} deviceProfile={deviceProfile} />}
 
       {/* ---- Spider-Verse post-processing ---- */}
       <VisualEffects started={started} performanceTier={performanceTier} />

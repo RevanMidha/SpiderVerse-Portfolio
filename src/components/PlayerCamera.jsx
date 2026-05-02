@@ -42,6 +42,7 @@ export function PlayerCamera({ started, targetOrb, onThwip }) {
     if (!started) return;
     let lastX = 0;
     let lastY = 0;
+    let activePointerId = null;
 
     // Common movement logic
     const handleInput = (clientX, clientY) => {
@@ -57,60 +58,41 @@ export function PlayerCamera({ started, targetOrb, onThwip }) {
       );
     };
 
-    // Mouse Events
-    const onMouseDown = (e) => {
-      if (e.button === 2) {
-        isDragging.current = true;
-        lastX = e.clientX;
-        lastY = e.clientY;
-      }
+    const onPointerDown = (e) => {
+      if (e.pointerType === 'mouse' && e.button !== 2) return;
+      activePointerId = e.pointerId;
+      isDragging.current = true;
+      lastX = e.clientX;
+      lastY = e.clientY;
+      gl.domElement.setPointerCapture?.(e.pointerId);
     };
-    const onMouseUp = (e) => {
-      if (e.button === 2) isDragging.current = false;
-    };
-    const onMouseMove = (e) => {
-      if (!isDragging.current) return;
-      handleInput(e.clientX, e.clientY);
-    };
-
-    // Touch Events
-    const onTouchStart = (e) => {
-      if (e.touches.length === 1) {
-        isDragging.current = true;
-        lastX = e.touches[0].clientX;
-        lastY = e.touches[0].clientY;
-      }
-    };
-    const onTouchEnd = () => {
+    const onPointerUp = (e) => {
+      if (activePointerId !== e.pointerId) return;
       isDragging.current = false;
+      activePointerId = null;
+      gl.domElement.releasePointerCapture?.(e.pointerId);
     };
-    const onTouchMove = (e) => {
-      // Prevent scrolling when swiping on the canvas
-      if (e.cancelable) e.preventDefault(); 
-      if (!isDragging.current || e.touches.length !== 1) return;
-      handleInput(e.touches[0].clientX, e.touches[0].clientY);
+    const onPointerMove = (e) => {
+      if (!isDragging.current) return;
+      if (activePointerId !== null && activePointerId !== e.pointerId) return;
+      if (e.cancelable) e.preventDefault();
+      handleInput(e.clientX, e.clientY);
     };
 
     const onContext = (e) => e.preventDefault();
     
-    gl.domElement.addEventListener('mousedown', onMouseDown);
-    window.addEventListener('mouseup', onMouseUp);
-    window.addEventListener('mousemove', onMouseMove);
+    gl.domElement.addEventListener('pointerdown', onPointerDown, { passive: false });
+    gl.domElement.addEventListener('pointerup', onPointerUp);
+    gl.domElement.addEventListener('pointercancel', onPointerUp);
+    gl.domElement.addEventListener('pointermove', onPointerMove, { passive: false });
     gl.domElement.addEventListener('contextmenu', onContext);
-    
-    gl.domElement.addEventListener('touchstart', onTouchStart, { passive: false });
-    window.addEventListener('touchend', onTouchEnd);
-    window.addEventListener('touchmove', onTouchMove, { passive: false });
 
     return () => {
-      gl.domElement.removeEventListener('mousedown', onMouseDown);
-      window.removeEventListener('mouseup', onMouseUp);
-      window.removeEventListener('mousemove', onMouseMove);
+      gl.domElement.removeEventListener('pointerdown', onPointerDown);
+      gl.domElement.removeEventListener('pointerup', onPointerUp);
+      gl.domElement.removeEventListener('pointercancel', onPointerUp);
+      gl.domElement.removeEventListener('pointermove', onPointerMove);
       gl.domElement.removeEventListener('contextmenu', onContext);
-      
-      gl.domElement.removeEventListener('touchstart', onTouchStart);
-      window.removeEventListener('touchend', onTouchEnd);
-      window.removeEventListener('touchmove', onTouchMove);
     };
   }, [started, gl]);
 
